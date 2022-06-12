@@ -31,12 +31,12 @@ public class ProductCommandService {
 //        productDomainService.invest(param);
 //    }
 
-    @Transactional
+    @Transactional(transactionManager = "multiTransactionManager")
     public void update() {
         Product product = productDomainService.findBy(1L);
         Member member = memberDomainService.findBy(1L);
 
-        product.setTitle("old");
+        product.setTitle("new");
         member.setName("hi");
     }
 
