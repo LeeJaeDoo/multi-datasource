@@ -1,0 +1,40 @@
+spring:
+  config:
+    use-legacy-processing: true
+  profiles:
+    active: local
+  datasource:
+    domain2:
+      hikari:
+        jdbc-url: jdbc:mysql://localhost:3306/member?serverTimezone=Asia/Seoul&useSSL=false&allowPublicKeyRetrieval=true
+        username: root
+        password: a90a1027a
+        driver-class-name: com.mysql.cj.jdbc.Driver
+        auto-commit: false
+        minimum-idle: 2
+        maximum-pool-size: 2
+        connection-test-query: select 1
+        connection-timeout: 5000
+  jpa:
+    database: mysql
+    show-sql: true
+    hibernate:
+      ddl-auto: none
+      naming:
+        implicit-strategy: org.hibernate.boot.model.naming.ImplicitNamingStrategyLegacyHbmImpl
+        physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+    properties:
+      hibernate:
+        show-sql: true
+        format-sql: true
+        dialect: org.hibernate.dialect.MySQL5InnoDBDialect
+    open-in-view: false
+  redis:
+    host: redis://localhost
+    port: 6379
+    timeout: 5
+
+logging:
+  level:
+    org.springframework.transaction.interceptor: TRACE
+    jdbc.sqltiming: TRACE

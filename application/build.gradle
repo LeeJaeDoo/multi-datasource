@@ -1,0 +1,32 @@
+plugins {
+    id 'com.epages.restdocs-api-spec' version '0.11.4'
+}
+
+dependencies {
+    implementation project (':domain1')
+    implementation project (':domain2')
+}
+
+test {
+    useJUnitPlatform()
+}
+
+openapi3 {
+    server = 'http://localhost:8080'
+    title = 'Investment API'
+    description = 'Investment Api Description'
+    version = '0.1.0'
+    format = 'yml'
+    outputFileNamePrefix = "${rootProject.name}"
+    delete {
+        file "src/main/resources/static/docs/openapi3.yml"
+    }
+    copy {
+        from "build/api-spec"
+        into "src/main/resources/static/docs/"
+    }
+}
+
+build {
+    dependsOn openapi3
+}

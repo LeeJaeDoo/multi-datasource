@@ -1,0 +1,9 @@
+### 투자 상품 조회
+GET http://localhost:8080/products?page=0&size=1&startedAt=1900-01-01 00:00:00&finishedAt=9999-12-31 23:59:59
+
+### 투자
+PUT http://localhost:8080/products/3/invest?investingAmount=2000
+X-USER-ID: 1
+
+### test
+PUT http://localhost:8080/products
