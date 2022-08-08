@@ -4,3 +4,21 @@ spring:
     include:
       - domain1
       - domain2
+  jta:
+    enabled: true
+    atomikos:
+      datasource:
+        domain1:
+          unique-resource-name: domain1
+          xa-data-source-class-name: com.mysql.cj.jdbc.MysqlXADataSource    # class로 사용되는 MysqlXADataSource 클래스는 mysql-connector-java의 버전에 따라 위치가 다르기 때문에 확인 필요
+          xa-properties:
+            user: root
+            password: a90a1027a
+            url: jdbc:mysql://localhost:3306/databasename?autoReconnect=true&useSSL=false&zeroDateTimeBehavior=convertToNull
+        domain2:
+          unique-resource-name: domain2
+          xa-data-source-class-name: com.mysql.cj.jdbc.MysqlXADataSource
+          xa-properties:
+            user: root
+            password: a90a1027a
+            url: jdbc:mysql://localhost:3306/databasename?autoReconnect=true&useSSL=false&zeroDateTimeBehavior=convertToNull

@@ -1,0 +1,347 @@
+openapi: 3.0.1
+info:
+  title: Investment API
+  description: Investment Api Description
+  version: 0.1.0
+servers:
+- url: http://localhost:8080
+tags: []
+paths:
+  /investors:
+    get:
+      tags:
+      - investors
+      summary: 현재 내가 투자해온 상품 정보 조회
+      description: 나의 투자 상품 조회
+      operationId: get-investor-info
+      parameters:
+      - name: X-USER-ID
+        in: header
+        description: 사용자ID
+        required: true
+        schema:
+          type: number
+        example: "1"
+      responses:
+        "401":
+          description: "401"
+          content:
+            application/json;charset=UTF-8:
+              schema:
+                $ref: '#/components/schemas/products-productId-invest-1889985491'
+              examples:
+                get-investor-info-non-header:
+                  value: |-
+                    {
+                      "message" : "권한이 없는 요청입니다."
+                    }
+        "200":
+          description: "200"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/investors216006335'
+              examples:
+                get-investor-info:
+                  value: |-
+                    [ {
+                      "productId" : 1,
+                      "productTitle" : "테스트",
+                      "totalInvestingAmount" : 10,
+                      "investedAmount" : 1,
+                      "investedAt" : "2022-04-11T09:00:00"
+                    } ]
+  /products:
+    get:
+      tags:
+      - products
+      summary: 투자 상품 조회
+      description: 투자 상품
+      operationId: get-products
+      parameters:
+      - name: startedAt
+        in: query
+        description: 투자 시작 일시
+        required: true
+        schema:
+          type: number
+      - name: finishedAt
+        in: query
+        description: 투자 종료 일시
+        required: true
+        schema:
+          type: number
+      responses:
+        "400":
+          description: "400"
+          content:
+            application/json;charset=UTF-8:
+              schema:
+                $ref: '#/components/schemas/products1402255692'
+              examples:
+                get-products-invalid-date:
+                  value: |-
+                    {
+                      "message" : "잘못된 요청입니다.",
+                      "valids" : [ {
+                        "field" : "validPeriod",
+                        "message" : "날짜가 올바르지 않습니다.",
+                        "rejectedValue" : false
+                      } ]
+                    }
+        "200":
+          description: "200"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/products606795620'
+              examples:
+                get-products:
+                  value: |-
+                    {
+                      "content" : [ {
+                        "id" : 1,
+                        "title" : "테스트 상품",
+                        "totalInvestingAmount" : 1,
+                        "investingAmount" : 10,
+                        "investorCnt" : 3,
+                        "status" : "대기중",
+                        "period" : 4
+                      } ],
+                      "pageable" : "INSTANCE",
+                      "totalPages" : 1,
+                      "totalElements" : 1,
+                      "last" : true,
+                      "size" : 1,
+                      "number" : 0,
+                      "sort" : {
+                        "empty" : true,
+                        "unsorted" : true,
+                        "sorted" : false
+                      },
+                      "numberOfElements" : 1,
+                      "first" : true,
+                      "empty" : false
+                    }
+  /products/{productId}/invest:
+    put:
+      tags:
+      - products
+      summary: 등록된 투자 상품 투자 신청
+      description: 상품 투자 신청
+      operationId: put-products
+      parameters:
+      - name: productId
+        in: path
+        description: 투자할 상품ID
+        required: true
+        schema:
+          type: number
+      - name: investingAmount
+        in: query
+        description: 투자 금액
+        required: true
+        schema:
+          type: number
+      - name: X-USER-ID
+        in: header
+        description: 사용자ID
+        required: true
+        schema:
+          type: number
+        example: "1"
+      responses:
+        "400":
+          description: "400"
+          content:
+            application/json;charset=UTF-8:
+              schema:
+                $ref: '#/components/schemas/products-productId-invest1627891264'
+              examples:
+                put-products-invalid-investing-amount:
+                  value: |-
+                    {
+                      "message" : "잘못된 요청입니다.",
+                      "valids" : [ {
+                        "field" : "investingAmount",
+                        "message" : "유효하지 않은 투자금액 입니다.",
+                        "rejectedValue" : 0
+                      } ]
+                    }
+                put-products-invalid-product-id:
+                  value: |-
+                    {
+                      "message" : "잘못된 요청입니다.",
+                      "stackTrace" : "javax.validation.ConstraintViolationException: investProducts.productId: must be greater than or equal to 1\n\tat org.springframework.validation.beanvalidation.MethodValidationInterceptor.invoke(MethodValidationInterceptor.java:120)\n\tat org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:186)\n\tat org.springframework.aop.framework.CglibAopProxy$CglibMethodInvocation.proceed(CglibAopProxy.java:753)\n\tat org.springframework.aop.framework.CglibAopProxy$DynamicAdvisedInterceptor.intercept(CglibAopProxy.java:698)\n\tat com.jd.presentation.ProductController$$EnhancerBySpringCGLIB$$ab1c6f0e.investProducts(<generated>)\n\tat java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)\n\tat java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)\n\tat java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)\n\tat java.base/java.lang.reflect.Method.invoke(Method.java:567)\n\tat org.springframework.web.method.support.InvocableHandlerMethod.doInvoke(InvocableHandlerMethod.java:205)\n\tat org.springframework.web.method.support.InvocableHandlerMethod.invokeForRequest(InvocableHandlerMethod.java:150)\n\tat org.springframework.web.servlet.mvc.method.annotation.ServletInvocableHandlerMethod.invokeAndHandle(ServletInvocableHandlerMethod.java:117)\n\tat org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.invokeHandlerMethod(RequestMappingHandlerAdapter.java:895)\n\tat org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.handleInternal(RequestMappingHandlerAdapter.java:808)\n\tat org.springframework.web.servlet.mvc.method.AbstractHandlerMethodAdapter.handle(AbstractHandlerMethodAdapter.java:87)\n\tat org.springframework.web.servlet.DispatcherServlet.doDispatch(DispatcherServlet.java:1067)\n\tat org.springframework.web.servlet.DispatcherServlet.doService(DispatcherServlet.java:963)\n\tat org.springframework.web.servlet.FrameworkServlet.processRequest(FrameworkServlet.java:1006)\n\tat org.springframework.web.servlet.FrameworkServlet.doPut(FrameworkServlet.java:920)\n\tat javax.servlet.http.HttpServlet.service(HttpServlet.java:684)\n\tat org.springframework.web.servlet.FrameworkServlet.service(FrameworkServlet.java:883)\n\tat org.springframework.test.web.servlet.TestDispatcherServlet.service(TestDispatcherServlet.java:72)\n\tat javax.servlet.http.HttpServlet.service(HttpServlet.java:764)\n\tat org.springframework.mock.web.MockFilterChain$ServletFilterProxy.doFilter(MockFilterChain.java:167)\n\tat org.springframework.mock.web.MockFilterChain.doFilter(MockFilterChain.java:134)\n\tat org.springframework.web.filter.RequestContextFilter.doFilterInternal(RequestContextFilter.java:100)\n\tat org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:117)\n\tat org.springframework.mock.web.MockFilterChain.doFilter(MockFilterChain.java:134)\n\tat org.springframework.web.filter.FormContentFilter.doFilterInternal(FormContentFilter.java:93)\n\tat org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:117)\n\tat org.springframework.mock.web.MockFilterChain.doFilter(MockFilterChain.java:134)\n\tat org.springframework.web.filter.CharacterEncodingFilter.doFilterInternal(CharacterEncodingFilter.java:201)\n\tat org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:117)\n\tat org.springframework.mock.web.MockFilterChain.doFilter(MockFilterChain.java:134)\n\tat org.springframework.test.web.servlet.MockMvc.perform(MockMvc.java:199)\n\tat com.jd.presentation.ProductControllerTest.invalidInvestTest(ProductControllerTest.java:206)\n\tat java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)\n\tat java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)\n\tat java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)\n\tat java.base/java.lang.reflect.Method.invoke(Method.java:567)\n\tat org.junit.platform.commons.util.ReflectionUtils.invokeMethod(ReflectionUtils.java:725)\n\tat org.junit.jupiter.engine.execution.MethodInvocation.proceed(MethodInvocation.java:60)\n\tat org.junit.jupiter.engine.execution.InvocationInterceptorChain$ValidatingInvocation.proceed(InvocationInterceptorChain.java:131)\n\tat org.junit.jupiter.engine.extension.TimeoutExtension.intercept(TimeoutExtension.java:149)\n\tat org.junit.jupiter.engine.extension.TimeoutExtension.interceptTestableMethod(TimeoutExtension.java:140)\n\tat org.junit.jupiter.engine.extension.TimeoutExtension.interceptTestMethod(TimeoutExtension.java:84)\n\tat org.junit.jupiter.engine.execution.ExecutableInvoker$ReflectiveInterceptorCall.lambda$ofVoidMethod$0(ExecutableInvoker.java:115)\n\tat org.junit.jupiter.engine.execution.ExecutableInvoker.lambda$invoke$0(ExecutableInvoker.java:105)\n\tat org.junit.jupiter.engine.execution.InvocationInterceptorChain$InterceptedInvocation.proceed(InvocationInterceptorChain.java:106)\n\tat org.junit.jupiter.engine.execution.InvocationInterceptorChain.proceed(InvocationInterceptorChain.java:64)\n\tat org.junit.jupiter.engine.execution.InvocationInterceptorChain.chainAndInvoke(InvocationInterceptorChain.java:45)\n\tat org.junit.jupiter.engine.execution.InvocationInterceptorChain.invoke(InvocationInterceptorChain.java:37)\n\tat org.junit.jupiter.engine.execution.ExecutableInvoker.invoke(ExecutableInvoker.java:104)\n\tat org.junit.jupiter.engine.execution.ExecutableInvoker.invoke(ExecutableInvoker.java:98)\n\tat org.junit.jupiter.engine.descriptor.TestMethodTestDescriptor.lambda$invokeTestMethod$6(TestMethodTestDescriptor.java:210)\n\tat org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73)\n\tat org.junit.jupiter.engine.descriptor.TestMethodTestDescriptor.invokeTestMethod(TestMethodTestDescriptor.java:206)\n\tat org.junit.jupiter.engine.descriptor.TestMethodTestDescriptor.execute(TestMethodTestDescriptor.java:131)\n\tat org.junit.jupiter.engine.descriptor.TestMethodTestDescriptor.execute(TestMethodTestDescriptor.java:65)\n\tat org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$6(NodeTestTask.java:151)\n\tat org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73)\n\tat org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$8(NodeTestTask.java:141)\n\tat org.junit.platform.engine.support.hierarchical.Node.around(Node.java:137)\n\tat org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$9(NodeTestTask.java:139)\n\tat org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73)\n\tat org.junit.platform.engine.support.hierarchical.NodeTestTask.executeRecursively(NodeTestTask.java:138)\n\tat org.junit.platform.engine.support.hierarchical.NodeTestTask.execute(NodeTestTask.java:95)\n\tat java.base/java.util.ArrayList.forEach(ArrayList.java:1540)\n\tat org.junit.platform.engine.support.hierarchical.SameThreadHierarchicalTestExecutorService.invokeAll(SameThreadHierarchicalTestExecutorService.java:41)\n\tat org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$6(NodeTestTask.java:155)\n\tat org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73)\n\tat org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$8(NodeTestTask.java:141)\n\tat org.junit.platform.engine.support.hierarchical.Node.around(Node.java:137)\n\tat org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$9(NodeTestTask.java:139)\n\tat org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73)\n\tat org.junit.platform.engine.support.hierarchical.NodeTestTask.executeRecursively(NodeTestTask.java:138)\n\tat org.junit.platform.engine.support.hierarchical.NodeTestTask.execute(NodeTestTask.java:95)\n\tat java.base/java.util.ArrayList.forEach(ArrayList.java:1540)\n\tat org.junit.platform.engine.support.hierarchical.SameThreadHierarchicalTestExecutorService.invokeAll(SameThreadHierarchicalTestExecutorService.java:41)\n\tat org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$6(NodeTestTask.java:155)\n\tat org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73)\n\tat org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$8(NodeTestTask.java:141)\n\tat org.junit.platform.engine.support.hierarchical.Node.around(Node.java:137)\n\tat org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$9(NodeTestTask.java:139)\n\tat org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73)\n\tat org.junit.platform.engine.support.hierarchical.NodeTestTask.executeRecursively(NodeTestTask.java:138)\n\tat org.junit.platform.engine.support.hierarchical.NodeTestTask.execute(NodeTestTask.java:95)\n\tat org.junit.platform.engine.support.hierarchical.SameThreadHierarchicalTestExecutorService.submit(SameThreadHierarchicalTestExecutorService.java:35)\n\tat org.junit.platform.engine.support.hierarchical.HierarchicalTestExecutor.execute(HierarchicalTestExecutor.java:57)\n\tat org.junit.platform.engine.support.hierarchical.HierarchicalTestEngine.execute(HierarchicalTestEngine.java:54)\n\tat org.junit.platform.launcher.core.EngineExecutionOrchestrator.execute(EngineExecutionOrchestrator.java:108)\n\tat org.junit.platform.launcher.core.EngineExecutionOrchestrator.execute(EngineExecutionOrchestrator.java:88)\n\tat org.junit.platform.launcher.core.EngineExecutionOrchestrator.lambda$execute$0(EngineExecutionOrchestrator.java:54)\n\tat org.junit.platform.launcher.core.EngineExecutionOrchestrator.withInterceptedStreams(EngineExecutionOrchestrator.java:67)\n\tat org.junit.platform.launcher.core.EngineExecutionOrchestrator.execute(EngineExecutionOrchestrator.java:52)\n\tat org.junit.platform.launcher.core.DefaultLauncher.execute(DefaultLauncher.java:96)\n\tat org.junit.platform.launcher.core.DefaultLauncher.execute(DefaultLauncher.java:75)\n\tat org.gradle.api.internal.tasks.testing.junitplatform.JUnitPlatformTestClassProcessor$CollectAllTestClassesExecutor.processAllTestClasses(JUnitPlatformTestClassProcessor.java:99)\n\tat org.gradle.api.internal.tasks.testing.junitplatform.JUnitPlatformTestClassProcessor$CollectAllTestClassesExecutor.access$000(JUnitPlatformTestClassProcessor.java:79)\n\tat org.gradle.api.internal.tasks.testing.junitplatform.JUnitPlatformTestClassProcessor.stop(JUnitPlatformTestClassProcessor.java:75)\n\tat org.gradle.api.internal.tasks.testing.SuiteTestClassProcessor.stop(SuiteTestClassProcessor.java:61)\n\tat java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)\n\tat java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)\n\tat java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)\n\tat java.base/java.lang.reflect.Method.invoke(Method.java:567)\n\tat org.gradle.internal.dispatch.ReflectionDispatch.dispatch(ReflectionDispatch.java:36)\n\tat org.gradle.internal.dispatch.ReflectionDispatch.dispatch(ReflectionDispatch.java:24)\n\tat org.gradle.internal.dispatch.ContextClassLoaderDispatch.dispatch(ContextClassLoaderDispatch.java:33)\n\tat org.gradle.internal.dispatch.ProxyDispatchAdapter$DispatchingInvocationHandler.invoke(ProxyDispatchAdapter.java:94)\n\tat com.sun.proxy.$Proxy2.stop(Unknown Source)\n\tat org.gradle.api.internal.tasks.testing.worker.TestWorker.stop(TestWorker.java:133)\n\tat java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)\n\tat java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)\n\tat java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)\n\tat java.base/java.lang.reflect.Method.invoke(Method.java:567)\n\tat org.gradle.internal.dispatch.ReflectionDispatch.dispatch(ReflectionDispatch.java:36)\n\tat org.gradle.internal.dispatch.ReflectionDispatch.dispatch(ReflectionDispatch.java:24)\n\tat org.gradle.internal.remote.internal.hub.MessageHubBackedObjectConnection$DispatchWrapper.dispatch(MessageHubBackedObjectConnection.java:182)\n\tat org.gradle.internal.remote.internal.hub.MessageHubBackedObjectConnection$DispatchWrapper.dispatch(MessageHubBackedObjectConnection.java:164)\n\tat org.gradle.internal.remote.internal.hub.MessageHub$Handler.run(MessageHub.java:414)\n\tat org.gradle.internal.concurrent.ExecutorPolicy$CatchAndRecordFailures.onExecute(ExecutorPolicy.java:64)\n\tat org.gradle.internal.concurrent.ManagedExecutorImpl$1.run(ManagedExecutorImpl.java:48)\n\tat java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1128)\n\tat java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:628)\n\tat org.gradle.internal.concurrent.ThreadFactoryImpl$ManagedThreadRunnable.run(ThreadFactoryImpl.java:56)\n\tat java.base/java.lang.Thread.run(Thread.java:835)\n"
+                    }
+                put-products-invalid-investing-amount1:
+                  value: |-
+                    {
+                      "message" : "잘못된 요청입니다.",
+                      "valids" : [ {
+                        "field" : "investingAmount",
+                        "message" : "유효하지 않은 투자금액 입니다.",
+                        "rejectedValue" : null
+                      } ]
+                    }
+        "401":
+          description: "401"
+          content:
+            application/json;charset=UTF-8:
+              schema:
+                $ref: '#/components/schemas/products-productId-invest-1889985491'
+              examples:
+                put-products-non-header:
+                  value: |-
+                    {
+                      "message" : "권한이 없는 요청입니다."
+                    }
+        "204":
+          description: "204"
+components:
+  schemas:
+    investors216006335:
+      type: array
+      items:
+        type: object
+        properties:
+          productTitle:
+            type: string
+            description: 상품 제목
+          investedAt:
+            type: string
+            description: 투자 일시
+          productId:
+            type: number
+            description: 상품ID
+          totalInvestingAmount:
+            type: number
+            description: 총 모집 금액
+          investedAmount:
+            type: number
+            description: 현재 모집 금액
+    products-productId-invest-1889985491:
+      type: object
+      properties:
+        message:
+          type: string
+          description: 에러 메세지
+    products-productId-invest1627891264:
+      type: object
+      properties:
+        valids:
+          type: array
+          description: 유효성 에러 내역
+          items:
+            type: object
+            properties:
+              field:
+                type: string
+                description: 유효성 에러 field
+              message:
+                type: string
+                description: 유효성 에러 메세지
+              rejectedValue:
+                description: 유효성 requestValue
+                oneOf:
+                - null
+                - type: number
+        stackTrace:
+          type: string
+          description: 에러 내역
+        message:
+          type: string
+          description: 에러 메세지
+    products1402255692:
+      type: object
+      properties:
+        valids:
+          type: array
+          description: 유효성 에러 내역
+          items:
+            type: object
+            properties:
+              field:
+                type: string
+                description: 유효성 에러 field
+              message:
+                type: string
+                description: 유효성 에러 메세지
+              rejectedValue:
+                type: boolean
+                description: 유효성 requestValue
+        stackTrace:
+          type: string
+          description: 에러 내역
+        message:
+          type: string
+          description: 에러 메세지
+    products606795620:
+      type: object
+      properties:
+        number:
+          type: number
+          description: 페이징 정보
+        numberOfElements:
+          type: number
+          description: 페이징 정보
+        size:
+          type: number
+          description: 페이지 사이즈
+        last:
+          type: boolean
+          description: 페이징 정보
+        totalPages:
+          type: number
+          description: 총 페이지
+        pageable:
+          type: string
+          description: 페이징 정보
+        sort:
+          type: object
+          properties:
+            unsorted:
+              type: boolean
+              description: 페이징 정보
+            sorted:
+              type: boolean
+              description: 페이징 정보
+            empty:
+              type: boolean
+              description: 페이징 정보
+          description: 페이징 정보
+        first:
+          type: boolean
+          description: 첫 페이지 여부
+        content:
+          type: array
+          items:
+            type: object
+            properties:
+              period:
+                type: number
+                description: 상품 모집기간
+              totalInvestingAmount:
+                type: number
+                description: 총 모집 금액
+              investingAmount:
+                type: number
+                description: 현재 모집 금액
+              id:
+                type: number
+                description: 상품ID
+              investorCnt:
+                type: number
+                description: 투자자 수
+              title:
+                type: string
+                description: 상품 제목
+              status:
+                type: string
+                description: 투자모집상태
+        empty:
+          type: boolean
+          description: 페이징 정보
+        totalElements:
+          type: number
+          description: 페이징 정보

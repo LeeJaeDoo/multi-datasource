@@ -5,6 +5,7 @@ plugins {
 dependencies {
     implementation project (':domain1')
     implementation project (':domain2')
+    implementation project (':common')
 }
 
 test {
